@@ -4,12 +4,20 @@
 #include <time.h>
 
 long long **asignar_matriz(int n, int m);                                                // Reservar la memoria y crear una matriz nula
+void eye(long long **matriz, int fila, int columnas);
 
 int main()
 {
     return 0;
 }
 
+void eye(long long **matriz, int fila, int columnas)
+{
+    for (int i = 0; i < fila; i++)
+    {
+        matriz[i][i] = 1;
+    }
+}
 
 long long **asignar_matriz(int n, int m)
 {
