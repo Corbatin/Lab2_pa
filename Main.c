@@ -3,7 +3,13 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define P (long long)3781996138433268199
+#define Pa (long long)1761129190
+#define Pb (long long)892783079
+#define bAJO (long long)2147483647
+
 long long **asignar_matriz(int n, int m);                                                // Reservar la memoria y crear una matriz nula
+
 
 
 int main()
@@ -24,4 +30,15 @@ long long **asignar_matriz(int n, int m)
     }
     // en memoria ya tenemos reservado espacio para una matriz de x por x --> array[x][x]
     return &*array; // retorno de un puntero doble
+}
+
+void llenar_matriz(long long **matriz, int filas, int columnas)
+{
+    for (int i = 0; i < filas; i++)
+    {
+        for (int j = 0; j < columnas; j++)
+        {
+            matriz[i][j] = ((long long)(rand() % P)); // Se asignan valores aleatorios a cada coordenadas de la matriz
+        }
+    }
 }
