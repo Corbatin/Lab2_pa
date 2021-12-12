@@ -30,7 +30,7 @@ int main()
 
 void menu()
 {
-    int opcion, filas, columnas, el;
+    int opcion, filas, columnas, el, filas_2, columnas_2;
     long long** Matriz_1, Matriz_2, Matriz_resultado;
     clock_t tiempo1, tiempo2;
     
@@ -39,6 +39,11 @@ void menu()
     printf("\nEscoga la cantidad de columnas de la matriz 1: ");
     scanf("%i", &columnas);
     
+    printf("\nEscoga la cantidad de filas de la matriz 2: ");
+    scanf("%i", &filas_2);
+    printf("\nEscoga la cantidad de columnas de la matriz 2: ");
+    scanf("%i", &columnas_2);
+
     Matriz_resultado = asignar_matriz(filas, columnas);
 
     do{
@@ -109,6 +114,22 @@ void imprimir_matriz(long long **array, int filas, int columnas)
     }
 }
 
+void multiplicacion_original(long long **matriz_1,long long **matriz_2,int filas_1,int filas_2,int col_1,int col_2, long long** Matriz_resultado)
+{
+    for (int i = 0; i < filas_1; i++)
+    {
+        for (int j = 0; i < col_2; i++)
+        {
+            for (int k = 0; i < col_1; i++)
+            {
+                Matriz_resultado[i][j] += matriz_1[i][k]* matriz_2[k][j];
+            }
+            
+        }
+        
+    }
+    
+}
 
 
 
