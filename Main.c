@@ -4,6 +4,7 @@
 #include <time.h>
 
 long long **asignar_matriz(int n, int m);                                                // Reservar la memoria y crear una matriz nula
+void llenar_matriz(long long **matriz, int filas, int columnas);                         // Llenar la matriz nula con valores al azar utilizando la funcion rand()
 
 int main()
 {
@@ -22,4 +23,15 @@ long long **asignar_matriz(int n, int m)
     }
     // en memoria ya tenemos reservado espacio para una matriz de x por x --> array[x][x]
     return &*array; // retorno de un puntero doble
+}
+
+void llenar_matriz(long long **matriz, int filas, int columnas)
+{
+    for (int i = 0; i < filas; i++)
+    {
+        for (int j = 0; j < columnas; j++)
+        {
+            matriz[i][j] = ((long long)(rand() % P)); // Se asignan valores aleatorios a cada coordenadas de la matriz
+        }
+    }
 }
