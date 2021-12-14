@@ -59,6 +59,7 @@ void menu()
         switch (el)
         {
         case 1:
+            multiplicacion_original(Matriz_1,Matriz_2,filas_1,filas_2,col_1,col_2,Matriz_resultado);
             break;
         case 2:
             break;
