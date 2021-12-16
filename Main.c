@@ -12,7 +12,8 @@ long long **asignar_matriz(int n, int m);                                       
 void llenar_matriz(long long **matriz, int filas, int columnas);                       // Llenar la matriz nula con valores al azar utilizando la funcion rand()
 void imprimir_matriz(long long **array, int filas, int columnas);                      // Funcion que imprime la matriz
 void menu();                                                                           // Menu para desplazarse entre las funciones del programa
-void multiplicacion_original(long long **matriz_1,long long **matriz_2,int filas_1,int filas_2,int col_1,int col_2);
+void multiplicacion_original(long long **matriz_1,long long **matriz_2,int filas_1,int filas_2,int col_1,int col_2,long long **matriz_resultado);
+void llenar_con_0(long long **matriz,int filas,int columnas);
 
 // ########### Funciones Profesor #######//
 long long MultP(long long a, long long b);
@@ -31,7 +32,7 @@ int main()
 void menu()
 {
     int opcion, filas, columnas, el, filas_2, columnas_2;
-    long long** Matriz_1, Matriz_2, Matriz_resultado;
+    long long** Matriz_1, **Matriz_2, **Matriz_resultado;
     clock_t tiempo1, tiempo2;
     
     printf("\nEscoga la cantidad de filas de la matriz 1: ");
@@ -44,10 +45,17 @@ void menu()
     printf("\nEscoga la cantidad de columnas de la matriz 2: ");
     scanf("%i", &columnas_2);
 
-    Matriz_resultado = asignar_matriz(filas, columnas);
+    Matriz_1 = asignar_matriz(filas,columnas);
+    Matriz_2 = asignar_matriz(filas_2,columnas_2);
+
+    llenar_matriz(Matriz_1,filas,columnas);
+    llenar_matriz(Matriz_2,filas_2,columnas_2);
+
+    Matriz_resultado = asignar_matriz(filas_2, columnas);
+    llenar_con_0(Matriz_resultado,filas_2,columnas);
 
     do{
-        printf("Que desea ver?");
+        printf("\nQue desea ver?");
         printf("\n 1) Generar Nueva matriz 1. ");
         printf("\n 2) Generar Nueva matriz 2. ");
         printf("\n 3) Multiplicacion Matrices clasica.");
@@ -56,14 +64,20 @@ void menu()
         printf("\n 0) Salir del programa.");    
         scanf("%i",&opcion);
         
-        switch (el)
+        switch (opcion)
         {
         case 1:
-            multiplicacion_original(Matriz_1,Matriz_2,filas_1,filas_2,col_1,col_2,Matriz_resultado);
             break;
         case 2:
             break;
         case 3:
+        	printf("\nMatriz 1: \n");
+        	imprimir_matriz(Matriz_1,filas,columnas);
+        	printf("\nMatriz 2: \n");
+        	imprimir_matriz(Matriz_2,filas_2,columnas_2);
+        	multiplicacion_original(Matriz_1,Matriz_2,filas,filas_2,columnas,columnas_2,Matriz_resultado);
+            printf("\nMatriz Resultado: \n");
+            imprimir_matriz(Matriz_resultado,filas_2,columnas);
             break;
         case 4:
             break;    
@@ -72,7 +86,6 @@ void menu()
         default:
             break;
         }
-        
     }while(opcion);
 }
 
@@ -95,7 +108,7 @@ void llenar_matriz(long long **matriz, int filas, int columnas)
     {
         for (int j = 0; j < columnas; j++)
         {
-            matriz[i][j] = ((long long)(rand() % P)); // Se asignan valores aleatorios a cada coordenadas de la matriz
+            matriz[i][j] = i + j + 1; //((long long)(rand() % P)); // Se asignan valores aleatorios a cada coordenadas de la matriz
         }
     }
 }
@@ -119,20 +132,23 @@ void multiplicacion_original(long long **matriz_1,long long **matriz_2,int filas
 {
     for (int i = 0; i < filas_1; i++)
     {
-        for (int j = 0; i < col_2; i++)
+        for (int j = 0; j < col_2; j++)
         {
-            for (int k = 0; i < col_1; i++)
+            for (int k = 0; k < col_1; k++)
             {
                 Matriz_resultado[i][j] += matriz_1[i][k]* matriz_2[k][j];
-            }
-            
-        }
-        
-    }
-    
+            }   
+        }   
+    }    
 }
 
-
+void llenar_con_0(long long **matriz,int filas,int columnas){
+	for(int i = 0; i < filas; i++){
+		for (int j = 0; j < columnas; j++){
+			matriz[i][j] = 0;
+		}
+	}
+}
 
 
 
