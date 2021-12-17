@@ -10,8 +10,11 @@
 
 long long **asignar_matriz(int n, int m);                         // Reservar la memoria y crear una matriz nula
 void llenar_matriz(long long **matriz, int filas, int columnas);  // Llenar la matriz nula con valores al azar utilizando la funcion rand()
+void llenar_submatriz(long long **matriz,long long **matriz_original,int iFilas,int fFilas,int iCol,int fCol);
 void imprimir_matriz(long long **array, int filas, int columnas); // Funcion que imprime la matriz
 void menu();                                                      // Menu para desplazarse entre las funciones del programa
+void sumaMatrices(long long **matriz1,long long** matriz2, int filas, int columnas, long long** Mresultado);
+void restaMatrices(long long **matriz1,long long** matriz2, long long **matriz_resultado,int filas, int columnas);
 void multiplicacion_clasica(long long **matriz_1, long long **matriz_2, int filas_1, int filas_2, int col_1, int col_2, long long **matriz_resultado);
 void Mult_Strassen(long long **matriz_1, long long **matriz_2, int filas_1, int filas_2, int col_1, int col_2, long long **matriz_resultado);
 void llenar_con_0(long long **matriz, int filas, int columnas);
@@ -21,6 +24,7 @@ long long MultP(long long a, long long b);
 long long RestaP(long long a, long long b);
 long long SumaP(long long a, long long b);
 long long InvP(long long A);
+
 
 int main()
 {
@@ -40,6 +44,20 @@ void menu()
     printf("\nEscoga la cantidad de columnas de la matriz 1: ");
     scanf("%i", &columnas);
 
+    Matriz_1 = asignar_matriz(filas, columnas);
+    llenar_matriz(Matriz_1, filas, columnas);
+    Matriz_2 = asignar_matriz(filas,columnas);
+    llenar_matriz(Matriz_2,filas,columnas);
+    // llenar_submatriz(Matriz_2,Matriz_1,0,filas/2,0,columnas/2);
+
+    printf("\nMatriz 1: \n");
+    imprimir_matriz(Matriz_1, filas, columnas);
+    printf("\nSubMatriz: \n");
+    imprimir_matriz(Matriz_2, filas, columnas);
+    printf("\nMatriz resultado: \n");
+    sumaMatrices(Matriz_1,Matriz_2,filas,columnas,Matriz_resultado);
+    imprimir_matriz(Matriz_resultado,filas,columnas);
+    /*
     printf("\nEscoga la cantidad de filas de la matriz 2: ");
     scanf("%i", &filas_2);
     printf("\nEscoga la cantidad de columnas de la matriz 2: ");
@@ -72,13 +90,21 @@ void menu()
         case 2:
             break;
         case 3:
-            printf("\nMatriz 1: \n");
-            imprimir_matriz(Matriz_1, filas, columnas);
-            printf("\nMatriz 2: \n");
-            imprimir_matriz(Matriz_2, filas_2, columnas_2);
-            multiplicacion_clasica(Matriz_1, Matriz_2, filas, filas_2, columnas, columnas_2, Matriz_resultado);
-            printf("\nMatriz Resultado: \n");
-            imprimir_matriz(Matriz_resultado, filas_2, columnas);
+            if(filas != columnas_2)
+            {
+                printf("\nDimensiones incorrectas, no se puede realizar multiplicacion 🥶");
+                break;
+            }
+            else{
+                printf("\nMatriz 1: \n");
+                imprimir_matriz(Matriz_1, filas, columnas);
+                printf("\nMatriz 2: \n");
+                imprimir_matriz(Matriz_2, filas_2, columnas_2);
+                multiplicacion_clasica(Matriz_1, Matriz_2, filas, filas_2, columnas, columnas_2, Matriz_resultado);
+                printf("\nMatriz Resultado: \n");
+                imprimir_matriz(Matriz_resultado, filas_2, columnas);
+                // free(cosas);
+            }
             break;
         case 4:
             printf("\nMatriz 1: \n");
@@ -95,6 +121,7 @@ void menu()
             break;
         }
     } while (opcion);
+    */
 }
 
 long long **asignar_matriz(int n, int m)
@@ -120,6 +147,18 @@ void llenar_matriz(long long **matriz, int filas, int columnas)
         }
     }
 }
+
+void llenar_submatriz(long long **matriz,long long **matriz_original,int iFilas,int fFilas,int iCol,int fCol)
+{
+    for (int i = iFilas; i < fFilas; i++)
+    {
+        for (int j = iCol; j < fCol; j++)
+        {
+            matriz[i][j] = matriz_original[i][j]; // Se asignan valores aleatorios a cada coordenadas de la matriz
+        }
+    }
+}
+
 void imprimir_matriz(long long **array, int filas, int columnas)
 {
     int i, j;
@@ -165,6 +204,35 @@ void llenar_con_0(long long **matriz, int filas, int columnas)
     }
 }
 
+void Mult_Strassen(long long **matriz_1, long long **matriz_2, int filas_1, int filas_2, int col_1, int col_2, long long **matriz_resultado)
+{
+        //hace cosas
+}
+
+void sumaMatrices(long long **matriz1,long long** matriz2, int filas, int columnas, long long** Mresultado)
+{
+    
+    for(int i = 0; i<columnas;i++)
+    {
+        for(int j = 0; i<filas; j++)
+        {
+            Mresultado[i][j] = matriz1[i][j]+matriz2[i][j];
+        } 
+    }
+}
+
+
+void restaMatrices(long long **matriz1,long long** matriz2,long long **matriz_resultado, int filas, int columnas){
+    long long suma = 0;
+    for (int i = 0; i < filas; i++)
+    {
+        for (int j = 0; j < columnas; j++)
+        {
+            suma = SumaP(matriz1[i][j],matriz2[i][j]);
+            matriz_resultado[i][j] = SumaP(matriz_resultado[i][j],suma);
+        }
+    }
+}
 // Funciones entregadas para los calculos en mod p.
 long long InvP(long long A)
 {
@@ -299,3 +367,27 @@ long long RestaP(long long a, long long b)
         return (a - b);
     }
 }
+
+
+
+
+/* TEXTOS SAGRADOS 2
+
+matriz 2x2 
+matriz = asignar_matriz(2,2)
+
+matriz m x m
+matriz_11 = asignar_matriz(m/2,m/2)
+matriz_12 = asignar_matriz(m/2,m/2)
+matriz_21 = asignar_matriz(m/2,m/2)
+matriz_22 = asignar_matriz(m/2,m/2)
+
+
+matriz_11 = copiar_valores (matriz,0,m/2,0,m/2 )
+matriz_12 = copiar_valores (matriz,m/2,m,0,m/2 )
+matriz_21 = copiar_valores (matriz,0,m/2,m/2,m)
+matriz_22 = copiar_valores (matriz,m/2,m,m/2,m )
+
+memcpy ->	copia n bytes entre dos áreas de memoria que no deben solaparse
+strcpy ->	copia una cadena en otra
+*/
