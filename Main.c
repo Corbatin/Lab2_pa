@@ -126,7 +126,7 @@ void multiplicacion_original(long long **matriz_1,long long **matriz_2,int filas
             }
             
         }
-        
+    
     }
     
 }
