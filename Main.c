@@ -18,9 +18,9 @@ long long **restaMatrices(long long **matriz1, long long **matriz2, int filas, i
 long long **multiplicacion_clasica(long long **matriz_1, long long **matriz_2, int filas_1, int filas_2, int col_1, int col_2);
 long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim);
 void llenar_con_0(long long **matriz, int filas, int columnas);
-long long **recombinarMatriz(long long **C11,long long **C12,long long **C21,long long **C22,int dim); //Funcion que recombina las 4 sub matrices en la matriz mas grande
-void dividir_matriz(long long **matrizO,long long **matriz_11,long long **matriz_12,long long **matriz_21,long long **matriz_22,int dim);
-
+long long **recombinarMatriz(long long **C11, long long **C12, long long **C21, long long **C22, int dim); // Funcion que recombina las 4 sub matrices en la matriz mas grande
+void dividir_matriz(long long **matrizO, long long **matriz_11, long long **matriz_12, long long **matriz_21, long long **matriz_22, int dim);
+long long** matriz_par(long long **matriz, int filas, int columnas;
 // ########### Funciones Profesor #######//
 long long MultP(long long a, long long b);
 long long RestaP(long long a, long long b);
@@ -49,16 +49,20 @@ void menu()
     llenar_matriz(Matriz_1, filas, columnas);
     Matriz_2 = asignar_matriz(filas, columnas);
     llenar_matriz(Matriz_2, filas, columnas);
-    // llenar_submatriz(Matriz_2,Matriz_1,0,filas/2,0,columnas/2);
 
     Matriz_resultado = asignar_matriz(filas, columnas);
-    Matriz_resultado = multiplicacion_clasica(Matriz_1,Matriz_2,filas,filas,columnas,columnas);
+    Matriz_resultado = multiplicacion_clasica(Matriz_1, Matriz_2, filas, filas, columnas, columnas);
     printf("\nMatriz 1: \n");
-    imprimir_matriz(Matriz_1,filas,columnas);
-    Matriz_resultado = Mult_Strassen(Matriz_1,Matriz_2,filas);
-    printf("\nMultiplicacion de Strassen : \n");
-    imprimir_matriz(Matriz_resultado,filas,columnas);
-
+    imprimir_matriz(Matriz_1, filas, columnas);
+    printf("\nMatriz 2: \n");
+    imprimir_matriz(Matriz_2, filas, columnas);
+    Matriz_resultado = multiplicacion_clasica(Matriz_1, Matriz_2, filas, filas, columnas, columnas);
+    printf("\n\nMultiplicacion Clasica: \n");
+    imprimir_matriz(Matriz_resultado, filas, columnas);
+    llenar_con_0(Matriz_resultado, filas, columnas);
+    Matriz_resultado = Mult_Strassen(Matriz_1, Matriz_2, filas);
+    printf("\n\nMultiplicacion de Strassen : \n");
+    imprimir_matriz(Matriz_resultado, filas, columnas);
 
     /*
     printf("\nEscoga la cantidad de filas de la matriz 2: ");
@@ -146,18 +150,18 @@ void llenar_matriz(long long **matriz, int filas, int columnas)
     {
         for (int j = 0; j < columnas; j++)
         {
-            matriz[i][j] = ((long long)(rand() % P)); // Se asignan valores aleatorios a cada coordenadas de la matriz
+            matriz[i][j] = i + j + 1; //((long long)(rand() % P)); // Se asignan valores aleatorios a cada coordenadas de la matriz
         }
     }
 }
 
-void llenar_submatriz(long long **matriz, long long **matriz_original, int iFilas,int iCol, int filas,int col)
+void llenar_submatriz(long long **matriz, long long **matriz_original, int iFilas, int iCol, int filas, int col)
 {
     for (int i = 0; i < filas; i++)
     {
         for (int j = 0; j < col; j++)
         {
-            matriz[i][j] = matriz_original[iFilas + i ][iCol + j]; // Se asignan valores aleatorios a cada coordenadas de la matriz
+            matriz[i][j] = matriz_original[iFilas + i][iCol + j]; // Se asignan valores aleatorios a cada coordenadas de la matriz
         }
     }
 }
@@ -178,22 +182,40 @@ void imprimir_matriz(long long **array, int filas, int columnas)
     }
 }
 
+// long long **multiplicacion_clasica(long long **matriz_1, long long **matriz_2, int filas_1, int filas_2, int col_1, int col_2)
+// {
+//     long long suma, **Matriz_resultado;
+//     Matriz_resultado = asignar_matriz(filas_2, col_1);
+
+//     for (int i = 0; i < filas_1; i++)
+//     {
+//         for (int j = 0; j < col_2; j++)
+//         {
+//             suma = 0;
+//             for (int k = 0; k < col_1; k++)
+//             {
+//                 suma = SumaP(suma, MultP(matriz_1[i][k], matriz_2[k][j]));
+//                 // Matriz_resultado[i][j] += matriz_1[i][k] * matriz_2[k][j];
+//             }
+//             Matriz_resultado[i][j] = SumaP(suma, Matriz_resultado[i][j]);
+//         }
+//     }
+//     return Matriz_resultado;
+// }
+
 long long **multiplicacion_clasica(long long **matriz_1, long long **matriz_2, int filas_1, int filas_2, int col_1, int col_2)
 {
-    long long suma, **Matriz_resultado;
+    long long **Matriz_resultado;
     Matriz_resultado = asignar_matriz(filas_2, col_1);
-
+    llenar_con_0(Matriz_resultado, filas_2, col_1);
     for (int i = 0; i < filas_1; i++)
     {
         for (int j = 0; j < col_2; j++)
         {
-            suma = 0;
             for (int k = 0; k < col_1; k++)
             {
-                suma = SumaP(suma, MultP(matriz_1[i][k], matriz_2[k][j]));
-                // Matriz_resultado[i][j] += matriz_1[i][k] * matriz_2[k][j];
+                Matriz_resultado[i][j] += matriz_1[i][k] * matriz_2[k][j];
             }
-            Matriz_resultado[i][j] = SumaP(suma, Matriz_resultado[i][j]);
         }
     }
     return Matriz_resultado;
@@ -227,149 +249,203 @@ long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim)
     matriz_a12 = asignar_matriz(dim / 2, dim / 2);
     matriz_a21 = asignar_matriz(dim / 2, dim / 2);
     matriz_a22 = asignar_matriz(dim / 2, dim / 2);
-    dividir_matriz(matriz_1,matriz_a11,matriz_a12,matriz_a21,matriz_a22,dim);
+    dividir_matriz(matriz_1, matriz_a11, matriz_a12, matriz_a21, matriz_a22, dim);
 
     matriz_b11 = asignar_matriz(dim / 2, dim / 2);
     matriz_b12 = asignar_matriz(dim / 2, dim / 2);
     matriz_b21 = asignar_matriz(dim / 2, dim / 2);
     matriz_b22 = asignar_matriz(dim / 2, dim / 2);
-    dividir_matriz(matriz_2,matriz_b11,matriz_b12,matriz_b21,matriz_b22,dim);
+    dividir_matriz(matriz_2, matriz_b11, matriz_b12, matriz_b21, matriz_b22, dim);
 
-    Mult_Strassen(matriz_a11, matriz_b11, dim / 2); 
+    Mult_Strassen(matriz_a11, matriz_b11, dim / 2);
     Mult_Strassen(matriz_a12, matriz_b12, dim / 2);
     Mult_Strassen(matriz_a21, matriz_b21, dim / 2);
     Mult_Strassen(matriz_a22, matriz_b22, dim / 2);
 
-    S1 = asignar_matriz(dim/2,dim/2);
-    S2 = asignar_matriz(dim/2,dim/2);
-    S3 = asignar_matriz(dim/2,dim/2);
-    S4 = asignar_matriz(dim/2,dim/2);
-    S5 = asignar_matriz(dim/2,dim/2);
-    T1 = asignar_matriz(dim/2,dim/2);
-    T2 = asignar_matriz(dim/2,dim/2);
-    T3 = asignar_matriz(dim/2,dim/2);
-    T4 = asignar_matriz(dim/2,dim/2);
-    T5 = asignar_matriz(dim/2,dim/2);
-    M1 = asignar_matriz(dim/2,dim/2);
-    M2 = asignar_matriz(dim/2,dim/2);
-    M3 = asignar_matriz(dim/2,dim/2);
-    M4 = asignar_matriz(dim/2,dim/2);
-    M5 = asignar_matriz(dim/2,dim/2);
-    M6 = asignar_matriz(dim/2,dim/2);
-    M7 = asignar_matriz(dim/2,dim/2);
-    C11 = asignar_matriz(dim/2,dim/2);
-    C12 = asignar_matriz(dim/2,dim/2);
-    C21 = asignar_matriz(dim/2,dim/2);
-    C22 = asignar_matriz(dim/2,dim/2);
-    aux = asignar_matriz(dim/2,dim/2);
-    aux2 = asignar_matriz(dim/2,dim/2);
-    
+    S1 = asignar_matriz(dim / 2, dim / 2);
+    S2 = asignar_matriz(dim / 2, dim / 2);
+    S3 = asignar_matriz(dim / 2, dim / 2);
+    S4 = asignar_matriz(dim / 2, dim / 2);
+    S5 = asignar_matriz(dim / 2, dim / 2);
+    T1 = asignar_matriz(dim / 2, dim / 2);
+    T2 = asignar_matriz(dim / 2, dim / 2);
+    T3 = asignar_matriz(dim / 2, dim / 2);
+    T4 = asignar_matriz(dim / 2, dim / 2);
+    T5 = asignar_matriz(dim / 2, dim / 2);
+    M1 = asignar_matriz(dim / 2, dim / 2);
+    M2 = asignar_matriz(dim / 2, dim / 2);
+    M3 = asignar_matriz(dim / 2, dim / 2);
+    M4 = asignar_matriz(dim / 2, dim / 2);
+    M5 = asignar_matriz(dim / 2, dim / 2);
+    M6 = asignar_matriz(dim / 2, dim / 2);
+    M7 = asignar_matriz(dim / 2, dim / 2);
+    C11 = asignar_matriz(dim / 2, dim / 2);
+    C12 = asignar_matriz(dim / 2, dim / 2);
+    C21 = asignar_matriz(dim / 2, dim / 2);
+    C22 = asignar_matriz(dim / 2, dim / 2);
+    aux = asignar_matriz(dim / 2, dim / 2);
+    aux2 = asignar_matriz(dim / 2, dim / 2);
 
-    // Sumas de la matriz A
-    S1 = sumaMatrices(matriz_a11, matriz_a22, dim/2,dim/2 );
-    S2 = sumaMatrices(matriz_a21, matriz_a22, dim/2,dim/2 );
-    S3 = sumaMatrices(matriz_a11, matriz_a12,dim/2,dim/2);
-    S4 = restaMatrices(matriz_a21, matriz_a11,dim/2,dim/2 );
-    S5 = restaMatrices(matriz_a12, matriz_a22,dim/2,dim/2);
+    // Sumas de la matriz 1
+    S1 = sumaMatrices(matriz_a11, matriz_a22, dim / 2, dim / 2);
+    S2 = sumaMatrices(matriz_a21, matriz_a22, dim / 2, dim / 2);
+    S3 = sumaMatrices(matriz_a11, matriz_a12, dim / 2, dim / 2);
+    S4 = restaMatrices(matriz_a21, matriz_a11, dim / 2, dim / 2);
+    S5 = restaMatrices(matriz_a12, matriz_a22, dim / 2, dim / 2);
 
-    // Sumas de la matriz B
-    T1 = sumaMatrices(matriz_b11, matriz_b22, dim/2,dim/2);
-    T2 = sumaMatrices(matriz_b21, matriz_b22, dim/2,dim/2);
-    T3 = sumaMatrices(matriz_b11, matriz_b12, dim/2,dim/2);
-    T4 = restaMatrices(matriz_b21, matriz_b11, dim/2,dim/2);
-    T5 = restaMatrices(matriz_b12, matriz_b22, dim/2,dim/2);
+    // Sumas de la matriz 2
+    T1 = sumaMatrices(matriz_b11, matriz_b22, dim / 2, dim / 2);
+    T2 = sumaMatrices(matriz_b21, matriz_b22, dim / 2, dim / 2);
+    T3 = sumaMatrices(matriz_b11, matriz_b12, dim / 2, dim / 2);
+    T4 = restaMatrices(matriz_b21, matriz_b11, dim / 2, dim / 2);
+    T5 = restaMatrices(matriz_b12, matriz_b22, dim / 2, dim / 2);
 
     // Multiplicaciones de Strassen
-    M1 = multiplicacion_clasica(S1, T1,dim/2,dim/2,dim/2,dim/2);
-    M2 = multiplicacion_clasica(S2, matriz_b11,dim/2,dim/2,dim/2,dim/2);
-    M3 = multiplicacion_clasica(matriz_a11, T5,dim/2,dim/2,dim/2,dim/2);
-    M4 = multiplicacion_clasica(matriz_a22, T4,dim/2,dim/2,dim/2,dim/2);
-    M5 = multiplicacion_clasica(S3, matriz_b22,dim/2,dim/2,dim/2,dim/2);
-    M6 = multiplicacion_clasica(S4, T3,dim/2,dim/2,dim/2,dim/2);
-    M7 = multiplicacion_clasica(S5, T2,dim/2,dim/2,dim/2,dim/2);
+    M1 = multiplicacion_clasica(S1, T1, dim / 2, dim / 2, dim / 2, dim / 2);
+    M2 = multiplicacion_clasica(S2, matriz_b11, dim / 2, dim / 2, dim / 2, dim / 2);
+    M3 = multiplicacion_clasica(matriz_a11, T5, dim / 2, dim / 2, dim / 2, dim / 2);
+    M4 = multiplicacion_clasica(matriz_a22, T4, dim / 2, dim / 2, dim / 2, dim / 2);
+    M5 = multiplicacion_clasica(S3, matriz_b22, dim / 2, dim / 2, dim / 2, dim / 2);
+    M6 = multiplicacion_clasica(S4, T3, dim / 2, dim / 2, dim / 2, dim / 2);
+    M7 = multiplicacion_clasica(S5, T2, dim / 2, dim / 2, dim / 2, dim / 2);
 
     // Recombinacion de Strassen
-    
-    //Hay que asignar los aux y aux como doble punteros
-    aux = sumaMatrices(M1, M4,dim/2, dim/2);
-    aux2 = restaMatrices(M5,M7,dim/2, dim/2);
-    C11 = sumaMatrices(aux, aux2,dim/2, dim/2);
-    C12 = sumaMatrices(M3, M5,dim/2, dim/2);
-    C21 = restaMatrices(M2, M4,dim/2, dim/2);
-    aux = restaMatrices(M1, M4,dim/2, dim/2);
-    aux2 = sumaMatrices(M3, M6,dim/2, dim/2);
-    C22 = sumaMatrices(aux, aux2,dim/2, dim/2);
+    aux = sumaMatrices(M1, M4, dim / 2, dim / 2);
+    aux2 = restaMatrices(M7, M5, dim / 2, dim / 2);
+    C11 = sumaMatrices(aux, aux2, dim / 2, dim / 2);
+    C12 = sumaMatrices(M3, M5, dim / 2, dim / 2);
+    C21 = sumaMatrices(M2, M4, dim / 2, dim / 2);
+    aux = restaMatrices(M1, M2, dim / 2, dim / 2);
+    aux2 = sumaMatrices(M3, M6, dim / 2, dim / 2);
+    C22 = sumaMatrices(aux, aux2, dim / 2, dim / 2);
 
-    matrizResultado = recombinarMatriz(C11,C12,C21,C22,dim);
-    return matrizResultado; // algo
+    matrizResultado = recombinarMatriz(C11, C12, C21, C22, dim);
+    return matrizResultado; 
 }
+
+// long long **sumaMatrices(long long **matriz1, long long **matriz2, int filas, int columnas)
+// {
+//     long long **Mresultado;
+//     Mresultado = asignar_matriz(filas, columnas);
+//     for (int i = 0; i < filas; i++)
+//     {
+//         for (int j = 0; j < columnas; j++)
+//         {
+//             Mresultado[i][j] = matriz1[i][j] + matriz2[i][j];
+//         }
+//     }
+//     return Mresultado;
+// }
 
 long long **sumaMatrices(long long **matriz1, long long **matriz2, int filas, int columnas)
 {
-    long long **Mresultado;
-    Mresultado = asignar_matriz(filas, columnas);
-    for (int i = 0; i < filas; i++)
-    {
-        for (int j = 0; j < columnas; j++)
-        {
-            Mresultado[i][j] = matriz1[i][j] + matriz2[i][j];
-        }
-    }
-    return Mresultado;
-}
-
-long long **restaMatrices(long long **matriz1, long long **matriz2, int filas, int columnas)
-{
-    long long resta = 0, **matrizResultado;
+    long long **matrizResultado;
     matrizResultado = asignar_matriz(filas, columnas);
     for (int i = 0; i < filas; i++)
     {
         for (int j = 0; j < columnas; j++)
         {
-            resta = RestaP(matriz1[i][j], matriz2[i][j]);
-            matrizResultado[i][j] = matrizResultado[i][j];
-            printf("\nMatriz : %lld ", matrizResultado[i][j]);
+            matrizResultado[i][j] = matriz1[i][j] + matriz2[i][j];
         }
     }
     return matrizResultado;
 }
 
+// long long **restaMatrices(long long **matriz1, long long **matriz2, int filas, int columnas)
+// {
+//     long long resta = 0, **matrizResultado;
+//     matrizResultado = asignar_matriz(filas, columnas);
+//     for (int i = 0; i < filas; i++)
+//     {
+//         for (int j = 0; j < columnas; j++)
+//         {
+//             resta = RestaP(matriz1[i][j], matriz2[i][j]);
+//             matrizResultado[i][j] = matrizResultado[i][j];
+//             printf("\nMatriz : %lld ", matrizResultado[i][j]);
+//         }
+//     }
+//     return matrizResultado;
+// }
 
-long long **recombinarMatriz(long long **C11,long long **C12,long long **C21,long long **C22,int dim){
+long long **restaMatrices(long long **matriz1, long long **matriz2, int filas, int columnas)
+{
+    long long **matrizResultado;
+    matrizResultado = asignar_matriz(filas, columnas);
+    for (int i = 0; i < filas; i++)
+    {
+        for (int j = 0; j < columnas; j++)
+        {
+            matrizResultado[i][j] = matriz1[i][j] - matriz2[i][j];
+        }
+    }
+    return matrizResultado;
+}
+
+long long **recombinarMatriz(long long **C11, long long **C12, long long **C21, long long **C22, int dim)
+{
     long long **matrizResultado;
     int val;
-    val = dim - 2;  //Esto hay que cambiarlo, tenemos que averiguar que valor es
-    matrizResultado = asignar_matriz(dim,dim);
-    for(int i= 0; i < dim; i++){
-        for (int j = 0; j < dim; j++){
-            if(i < dim / 2 && j < dim /2){
+    val = dim / 2;
+    matrizResultado = asignar_matriz(dim, dim);
+    for (int i = 0; i < dim; i++)
+    {
+        for (int j = 0; j < dim; j++)
+        {
+            if (i < dim / 2 && j < dim / 2)
+            {
                 matrizResultado[i][j] = C11[i][j];
-                // printf("\nDato C11[i][j] ->%d\n",C11[i][j]);
-                // printf("\nDato MR[i][j] ->%d\n",matrizResultado[i][j]);
-            }else if(i < dim / 2 && j >= dim / 2){
-                matrizResultado[i][j] = C12[i][j-val];
-                // printf("\nDato C12[i][j] ->%d\n",C12[i][j-val]);
-                // printf("\nDato MR[i][j] ->%d\n",matrizResultado[i][j]);
-            }else if(i >= dim / 2 && j < dim / 2){
+            }
+            else if (i < dim / 2 && j >= dim / 2)
+            {
+                matrizResultado[i][j] = C12[i][j - val];
+            }
+            else if (i >= dim / 2 && j < dim / 2)
+            {
                 matrizResultado[i][j] = C21[i - val][j];
-                // printf("\nDato C21[i][j] ->%d\n",C21[i - val][j]);
-                // printf("\nDato MR[i][j] ->%d\n",matrizResultado[i][j]);
-            }else{
-                matrizResultado[i][j] = C22[i - val][j -val];  //Esta wea no funciona porque i , j son mas grandes que C11, C12,C21,C22
-                // printf("\nDato C22[i][j] ->%d\n",C22[i -val][j-val]);
-                // printf("\nDato MR[i][j] ->%d\n",matrizResultado[i][j]);
+            }
+            else
+            {
+                matrizResultado[i][j] = C22[i - val][j - val];
             }
         }
     }
     return matrizResultado;
 }
 
-void dividir_matriz(long long **matrizO,long long **matriz_11,long long **matriz_12,long long **matriz_21,long long **matriz_22,int dim){
+long long** matriz_par(long long **matriz, int filas, int columnas)
+{
+    long long **matriz_par;
+    for (int i = 0; i < filas; i++)
+    {
+        for (int j = 0; j < columnas; j++)
+        {
+            // *averiguando si es legal(no estoy seguro si se ponerlo aqui o en el otro for *
+            if (powerOfTwo(filas)==0 &&powerOfTwo(columnas)==0)
+            {
+              matriz_par[filas+1][j]  = (long long **)calloc(filas, sizeof(long long)); 
+            }
+        }
+    }
+}
 
-    llenar_submatriz(matriz_11, matrizO, 0, 0, dim/2, dim/2);
-    llenar_submatriz(matriz_12, matrizO,0 ,dim / 2 ,dim/2, dim/2);
-    llenar_submatriz(matriz_21, matrizO, dim / 2,0, dim/2, dim/2);
-    llenar_submatriz(matriz_22, matrizO, dim / 2, dim / 2,dim/2, dim/2);
+int powerOfTwo(int n)
+    {
+        if(n==0) { return 0; }
+        while(n != 1)
+        {
+            n = n/2;
+            if(n%2 != 0 && n != 1){ return 0; }
+        }
+        return 1;
+    }
+    
+
+void dividir_matriz(long long **matrizO, long long **matriz_11, long long **matriz_12, long long **matriz_21, long long **matriz_22, int dim)
+{
+    llenar_submatriz(matriz_11, matrizO, 0, 0, dim / 2, dim / 2);
+    llenar_submatriz(matriz_12, matrizO, 0, dim / 2, dim / 2, dim / 2);
+    llenar_submatriz(matriz_21, matrizO, dim / 2, 0, dim / 2, dim / 2);
+    llenar_submatriz(matriz_22, matrizO, dim / 2, dim / 2, dim / 2, dim / 2);
 }
 
 // Funciones entregadas para los calculos en mod p.
