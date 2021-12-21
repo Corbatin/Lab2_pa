@@ -1,9 +1,9 @@
 // Nombres: Alvaro Soto Albornoz - Benjamín Melis Guerra
-// Nombre Profesora: Nicolas Théériault
+// Nombre Profesora: Nicolas Thériault
 // IDE: Visual Studio Code 1.62.3
 // SO: Windows 10
 // Fecha: 21 de Diciembre - 2021
-// Este programa hay que terminar esto
+// Este programa hace weas
 
 #include <stdio.h>
 #include <math.h>
@@ -26,27 +26,26 @@ long long **multiplicacion_clasica(long long **matriz_1, long long **matriz_2, i
 long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim);                                                                // Multiplicacion de matrices con el algoritmo de Strassen
 long long **recombinarMatriz(long long **C11, long long **C12, long long **C21, long long **C22, int dim);                                     // Funcion que recombina las 4 sub matrices en la matriz mas grande
 void dividir_matriz(long long **matrizO, long long **matriz_11, long long **matriz_12, long long **matriz_21, long long **matriz_22, int dim); // Se divide la Matriz en Submatrices
-long long **matriz_par(long long **matriz, int *dim);
+long long **matriz_par(long long **matriz, int *dim);                                                                                          // Funcion que aumenta a un numero par las dimensiones de una matriz de orden impar
 
 // ########### Funciones Profesor #######//
 long long MultP(long long a, long long b);
 long long RestaP(long long a, long long b);
 long long SumaP(long long a, long long b);
-long long InvP(long long A);
 
 int main()
 {
     srand(time(0)); // metodo para generar numeros aleatorios
-
     menu();
     return 0;
 }
 
 void menu()
 {
-    int opcion, filas, columnas, el, filas_2, columnas_2; // variables de dimension y de eleccion
+    int opcion, filas, columnas, el, filas_2, columnas_2; // Variables de dimension y de eleccion
     long long **Matriz_1, **Matriz_2, **Matriz_resultado; // Definicion de matrices
-    clock_t tiempo1, tiempo2;                             // Variables para tomar tiempos
+    clock_t tiempo1, tiempo2, tiempo3, tiempo4;           // Variables para tomar tiempos
+    float tiempoClasica, tiempoStrassen;
 
     printf("\nEscoga la cantidad de filas de la matriz 1: ");
     scanf("%i", &filas);
@@ -58,9 +57,9 @@ void menu()
     printf("\nEscoga la cantidad de columnas de la matriz 2: ");
     scanf("%i", &columnas_2);
 
-    Matriz_1 = asignar_matriz(filas, columnas);
+    Matriz_1 = asignar_matriz(filas, columnas); // Se llena la matriz 1 con valores aleatorios
     llenar_matriz(Matriz_1, filas, columnas);
-    Matriz_2 = asignar_matriz(filas_2, columnas_2);
+    Matriz_2 = asignar_matriz(filas_2, columnas_2); // Se llena la matriz 2 con valores aleatorios
     llenar_matriz(Matriz_2, filas_2, columnas_2);
 
     Matriz_resultado = asignar_matriz(filas_2, columnas);
@@ -71,7 +70,8 @@ void menu()
         printf("\n 1) Generar Nueva matriz 1. ");
         printf("\n 2) Generar Nueva matriz 2. ");
         printf("\n 3) Multiplicacion Matrices clasica.");
-        printf("\n 4) Multiplicacion Matrices por Strassen.(solo valido para matrices cuadradas)\n");
+        printf("\n 4) Multiplicacion Matrices por Strassen.(solo valido para matrices cuadradas)");
+        printf("\n 5) Comparar tiempos entre las dos multiplicaciones.(solo valido para matrices cuadradas)");
         printf("\n 0) Salir del programa.");
         scanf("%i", &opcion);
         switch (opcion)
@@ -103,13 +103,14 @@ void menu()
             llenar_matriz(Matriz_2, filas_2, columnas_2);
             break;
         case 3:
-            if (filas != columnas_2)
+            if (filas != columnas_2) // Comprueba que las filas de 1 sean igual a las columnas de 2
             {
                 printf("\nDimensiones incorrectas, no se puede realizar multiplicacion\n ");
                 break;
             }
             else
             {
+                printf("\nCalculando . . .\n");
                 tiempo1 = clock();
                 Matriz_resultado = multiplicacion_clasica(Matriz_1, Matriz_2, filas, filas, columnas, columnas);
                 tiempo2 = clock();
@@ -132,8 +133,9 @@ void menu()
             }
             break;
         case 4:
-            if (filas == columnas && filas_2 == columnas_2 && filas == filas_2 && columnas == columnas_2)
+            if (filas == columnas && filas_2 == columnas_2 && filas == filas_2 && columnas == columnas_2) // Se pregunta si ambas matrices tienen las mismas dimensiones
             {
+                printf("\nCalculando . . .\n");
                 tiempo1 = clock();
                 Matriz_resultado = Mult_Strassen(Matriz_1, Matriz_2, filas);
                 tiempo2 = clock();
@@ -165,6 +167,33 @@ void menu()
             }
             printf("\nTiempo de ejecucion: %f\n", ((double)tiempo2 - (double)tiempo1) / ((double)CLOCKS_PER_SEC));
             break;
+        case 5:
+            if (filas == columnas && filas_2 == columnas_2 && filas == filas_2 && columnas == columnas_2) // Se pregunta si ambas matrices tienen las mismas dimensiones
+            {
+                tiempo1 = clock();
+                multiplicacion_clasica(Matriz_1, Matriz_2, filas, filas_2, columnas, columnas_2);
+                tiempo2 = clock();
+                printf("\n\nTiempo de ejecucion Multiplicacion Clasica : %f\n", ((double)tiempo2 - (double)tiempo1) / ((double)CLOCKS_PER_SEC));
+                tiempo3 = clock();
+                Mult_Strassen(Matriz_1, Matriz_2, filas);
+                tiempo4 = clock();
+                printf("\n\nTiempo de ejecucion Strassen: %f\n", ((double)tiempo4 - (double)tiempo3) / ((double)CLOCKS_PER_SEC));
+                tiempoClasica = ((double)tiempo2 - (double)tiempo1) / ((double)CLOCKS_PER_SEC);
+                tiempoStrassen = ((double)tiempo4 - (double)tiempo3) / ((double)CLOCKS_PER_SEC);
+                if (tiempoClasica > tiempoStrassen)
+                {
+                    printf("\nLa multiplicacion de Strassen demoro menos que la multiplicacion clasica.\n");
+                }
+                else
+                {
+                    printf("\nLa multiplicacion clasica demoro menos que la multiplicacion de Strassen.\n");
+                }
+            }
+            else
+            {
+                printf("\nLas matrices entregadas no son cuadradas.\n");
+            }
+            break;
         case 0:
             printf("\nPrograma terminado ......");
             break;
@@ -173,7 +202,7 @@ void menu()
             break;
         }
     } while (opcion);
-    if (columnas > filas)
+    if (columnas > filas) // Liberar matriz 1
         filas = columnas;
     for (int i = 0; i < filas; i++)
     {
@@ -181,7 +210,7 @@ void menu()
     }
     free(Matriz_1);
 
-    if (columnas_2 > filas_2)
+    if (columnas_2 > filas_2) // Liberar matriz 2
         filas_2 = columnas_2;
     for (int i = 0; i < filas_2; i++)
     {
@@ -189,7 +218,7 @@ void menu()
     }
     free(Matriz_2);
 
-    if (columnas > filas_2)
+    if (columnas > filas_2) // Liberar matriz resultado
         filas_2 = columnas;
     for (int i = 0; i < filas_2; i++)
     {
@@ -283,10 +312,13 @@ long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim)
         matrizResultado = multiplicacion_clasica(matriz_1, matriz_2, 2, 2, 2, 2);
         return matrizResultado;
     }
+    // Comprobar que la dimension de las matrices sea par
     dim2 = dim;
     matriz_1 = matriz_par(matriz_1, &dim);
     matriz_2 = matriz_par(matriz_2, &dim2);
 
+    // PASO 1: SUBMATRICES
+    // Sub division de matrizes original en 4 submatrices cada una
     matriz_a11 = asignar_matriz(dim / 2, dim / 2);
     matriz_a12 = asignar_matriz(dim / 2, dim / 2);
     matriz_a21 = asignar_matriz(dim / 2, dim / 2);
@@ -299,10 +331,14 @@ long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim)
     matriz_b22 = asignar_matriz(dim / 2, dim / 2);
     dividir_matriz(matriz_2, matriz_b11, matriz_b12, matriz_b21, matriz_b22, dim);
 
+    // PASO 2: MULTIPLICACIONES
+    // Paso recursivo de la funcion
     Mult_Strassen(matriz_a11, matriz_b11, dim / 2);
     Mult_Strassen(matriz_a12, matriz_b12, dim / 2);
     Mult_Strassen(matriz_a21, matriz_b21, dim / 2);
     Mult_Strassen(matriz_a22, matriz_b22, dim / 2);
+
+    // PASO 3: ASIGNACION
 
     S1 = asignar_matriz(dim / 2, dim / 2);
     S2 = asignar_matriz(dim / 2, dim / 2);
@@ -329,6 +365,7 @@ long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim)
     aux2 = asignar_matriz(dim / 2, dim / 2);
 
     // Sumas de la matriz 1
+    // Primer paso de suma de matrices de Strassen
     S1 = sumaMatrices(matriz_a11, matriz_a22, dim / 2, dim / 2);
     S2 = sumaMatrices(matriz_a21, matriz_a22, dim / 2, dim / 2);
     S3 = sumaMatrices(matriz_a11, matriz_a12, dim / 2, dim / 2);
@@ -336,6 +373,7 @@ long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim)
     S5 = restaMatrices(matriz_a12, matriz_a22, dim / 2, dim / 2);
 
     // Sumas de la matriz 2
+    // Segundo paso de suma de matrices de Strassen
     T1 = sumaMatrices(matriz_b11, matriz_b22, dim / 2, dim / 2);
     T2 = sumaMatrices(matriz_b21, matriz_b22, dim / 2, dim / 2);
     T3 = sumaMatrices(matriz_b11, matriz_b12, dim / 2, dim / 2);
@@ -360,7 +398,7 @@ long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim)
     aux = restaMatrices(M1, M2, dim / 2, dim / 2);
     aux2 = sumaMatrices(M3, M6, dim / 2, dim / 2);
     C22 = sumaMatrices(aux, aux2, dim / 2, dim / 2);
-
+    // Recombinacion de matrices en la matriz resultado
     matrizResultado = recombinarMatriz(C11, C12, C21, C22, dim);
     return matrizResultado;
 }
@@ -405,115 +443,55 @@ long long **recombinarMatriz(long long **C11, long long **C12, long long **C21, 
         {
             if (i < dim / 2 && j < dim / 2)
             {
+                // asigna los valores de la submatriz M11 a la matriz resultado
                 matrizResultado[i][j] = C11[i][j];
             }
             else if (i < dim / 2 && j >= dim / 2)
             {
+                // asigna los valores de la submatriz M12 a la matriz resultado
                 matrizResultado[i][j] = C12[i][j - val];
             }
             else if (i >= dim / 2 && j < dim / 2)
             {
+                // asigna los valores de la submatriz M21 a la matriz resultado
                 matrizResultado[i][j] = C21[i - val][j];
             }
             else
             {
+                // asigna los valores de la submatriz M22 a la matriz resultado
                 matrizResultado[i][j] = C22[i - val][j - val];
             }
         }
     }
     return matrizResultado;
 }
-// void llenar_submatriz(long long **matriz, long long **matriz_original, int iFilas, int fFilas, int iCol, int fCol);
+
 long long **matriz_par(long long **matriz, int *dim)
 {
     long long **matriz_par;
     int Dim;
     Dim = *dim;
-    if (Dim % 2 != 0)
+    if (Dim % 2 != 0) // Comprueba si la matriz tiene dimension par
     {
-        matriz_par = asignar_matriz(Dim + 1, Dim + 1);
-        llenar_submatriz(matriz_par, matriz, 0, 0, Dim, Dim);
+        matriz_par = asignar_matriz(Dim + 1, Dim + 1);        // Asigna la memoria para dejar la matriz con dimension par
+        llenar_submatriz(matriz_par, matriz, 0, 0, Dim, Dim); // Rellena la matriz nueva con los valores de la original
         Dim++;
-        *dim = Dim;
-        return matriz_par;
+        *dim = Dim;        // Actualiza la dimension de la matriz
+        return matriz_par; // Devuelve la matriz con la dimension par
     }
     else
-        return matriz;
+        return matriz; // Devuelve la matriz orginal
 }
 
 void dividir_matriz(long long **matrizO, long long **matriz_11, long long **matriz_12, long long **matriz_21, long long **matriz_22, int dim)
 {
-    llenar_submatriz(matriz_11, matrizO, 0, 0, dim / 2, dim / 2);
-    llenar_submatriz(matriz_12, matrizO, 0, dim / 2, dim / 2, dim / 2);
-    llenar_submatriz(matriz_21, matrizO, dim / 2, 0, dim / 2, dim / 2);
-    llenar_submatriz(matriz_22, matrizO, dim / 2, dim / 2, dim / 2, dim / 2);
+    llenar_submatriz(matriz_11, matrizO, 0, 0, dim / 2, dim / 2);             // Traspasa los valores del primer cuadrante a M11
+    llenar_submatriz(matriz_12, matrizO, 0, dim / 2, dim / 2, dim / 2);       // Traspasa los valores del segundo cuadrante a M12
+    llenar_submatriz(matriz_21, matrizO, dim / 2, 0, dim / 2, dim / 2);       // Traspasa los valores del tercer cuadrante a M21
+    llenar_submatriz(matriz_22, matrizO, dim / 2, dim / 2, dim / 2, dim / 2); // Traspasa los valores del cuarto cuadrante a M22
 }
 
 // Funciones entregadas para los calculos en mod p.
-long long InvP(long long A)
-{
-    long long a, b, s1, s2, r, u;
-    a = A;
-    b = P;
-    s1 = 1;
-    s2 = 0;
-    if (A == 0)
-    {
-        printf("Error, division entre 0\n");
-        return (0);
-    }
-    while ((a % 2) == 0)
-    {
-        a >>= 1;
-        if ((s1 % 2) == 0)
-        {
-            s1 >>= 1;
-        }
-        else
-        {
-            s1 = (s1 + P) >> 1;
-        }
-    }
-    if (b > a)
-    {
-        r = b;
-        b = a;
-        a = r;
-        u = s2;
-        s2 = s1;
-        s1 = u;
-    }
-    while ((b != 0) && (b != a))
-    {
-        r = a - b;
-        u = RestaP(s1, s2);
-        while ((r % 2) == 0)
-        {
-            r >>= 1;
-            if ((u % 2) == 0)
-            {
-                u >>= 1;
-            }
-            else
-            {
-                u = (u + P) >> 1;
-            }
-        }
-        if (r < b)
-        {
-            a = b;
-            b = r;
-            s1 = s2;
-            s2 = u;
-        }
-        else
-        {
-            a = r;
-            s1 = u;
-        }
-    }
-    return (s1);
-}
 
 long long SumaP(long long a, long long b)
 {
