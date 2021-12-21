@@ -1,3 +1,10 @@
+// Nombres: Alvaro Soto Albornoz - Benjamín Melis Guerra
+// Nombre Profesora: Nicolas Théériault
+// IDE: Visual Studio Code 1.62.3
+// SO: Windows 10
+// Fecha: 21 de Diciembre - 2021
+// Este programa hay que terminar esto
+
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -11,15 +18,14 @@
 long long **asignar_matriz(int n, int m);                        // Reservar la memoria y crear una matriz nula
 void llenar_matriz(long long **matriz, int filas, int columnas); // Llenar la matriz nula con valores al azar utilizando la funcion rand()
 void llenar_submatriz(long long **matriz, long long **matriz_original, int iFilas, int fFilas, int iCol, int fCol);
-void imprimir_matriz(long long **array, int filas, int columnas); // Funcion que imprime la matriz
-void menu();                                                      // Menu para desplazarse entre las funciones del programa
-long long **sumaMatrices(long long **matriz1, long long **matriz2, int filas, int columnas);
-long long **restaMatrices(long long **matriz1, long long **matriz2, int filas, int columnas);
-long long **multiplicacion_clasica(long long **matriz_1, long long **matriz_2, int filas_1, int filas_2, int col_1, int col_2);
-long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim);
-void llenar_con_0(long long **matriz, int filas, int columnas);
-long long **recombinarMatriz(long long **C11, long long **C12, long long **C21, long long **C22, int dim); // Funcion que recombina las 4 sub matrices en la matriz mas grande
-void dividir_matriz(long long **matrizO, long long **matriz_11, long long **matriz_12, long long **matriz_21, long long **matriz_22, int dim);
+void imprimir_matriz(long long **array, int filas, int columnas);                                                                              // Funcion que imprime la matriz
+void menu();                                                                                                                                   // Menu para desplazarse entre las funciones del programa
+long long **sumaMatrices(long long **matriz1, long long **matriz2, int filas, int columnas);                                                   // Suma de Matrices
+long long **restaMatrices(long long **matriz1, long long **matriz2, int filas, int columnas);                                                  // Resta de matrices
+long long **multiplicacion_clasica(long long **matriz_1, long long **matriz_2, int filas_1, int filas_2, int col_1, int col_2);                // Multiplicacion de matrices de forma clasica
+long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim);                                                                // Multiplicacion de matrices con el algoritmo de Strassen
+long long **recombinarMatriz(long long **C11, long long **C12, long long **C21, long long **C22, int dim);                                     // Funcion que recombina las 4 sub matrices en la matriz mas grande
+void dividir_matriz(long long **matrizO, long long **matriz_11, long long **matriz_12, long long **matriz_21, long long **matriz_22, int dim); // Se divide la Matriz en Submatrices
 long long **matriz_par(long long **matriz, int *dim);
 
 // ########### Funciones Profesor #######//
@@ -38,9 +44,9 @@ int main()
 
 void menu()
 {
-    int opcion, filas, columnas, el, filas_2, columnas_2;
-    long long **Matriz_1, **Matriz_2, **Matriz_resultado;
-    clock_t tiempo1, tiempo2;
+    int opcion, filas, columnas, el, filas_2, columnas_2; // variables de dimension y de eleccion
+    long long **Matriz_1, **Matriz_2, **Matriz_resultado; // Definicion de matrices
+    clock_t tiempo1, tiempo2;                             // Variables para tomar tiempos
 
     printf("\nEscoga la cantidad de filas de la matriz 1: ");
     scanf("%i", &filas);
@@ -122,7 +128,7 @@ void menu()
                     imprimir_matriz(Matriz_resultado, filas_2, columnas);
                 }
 
-                printf("\nTiempo de ejecucion: %f\n", ((double)tiempo2 - (double)tiempo1) / ((double)CLOCKS_PER_SEC));               
+                printf("\nTiempo de ejecucion: %f\n", ((double)tiempo2 - (double)tiempo1) / ((double)CLOCKS_PER_SEC));
             }
             break;
         case 4:
@@ -263,18 +269,6 @@ long long **multiplicacion_clasica(long long **matriz_1, long long **matriz_2, i
     return Matriz_resultado;
 }
 
-
-void llenar_con_0(long long **matriz, int filas, int columnas)
-{
-    for (int i = 0; i < filas; i++)
-    {
-        for (int j = 0; j < columnas; j++)
-        {
-            matriz[i][j] = 0;
-        }
-    }
-}
-
 long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim)
 {
     long long **matriz_a11, **matriz_a12, **matriz_a21, **matriz_a22;
@@ -379,12 +373,11 @@ long long **sumaMatrices(long long **matriz1, long long **matriz2, int filas, in
     {
         for (int j = 0; j < columnas; j++)
         {
-            Mresultado[i][j] = SumaP(matriz1[i][j],matriz2[i][j]);
+            Mresultado[i][j] = SumaP(matriz1[i][j], matriz2[i][j]);
         }
     }
     return Mresultado;
 }
-
 
 long long **restaMatrices(long long **matriz1, long long **matriz2, int filas, int columnas)
 {
@@ -399,7 +392,6 @@ long long **restaMatrices(long long **matriz1, long long **matriz2, int filas, i
     }
     return matrizResultado;
 }
-
 
 long long **recombinarMatriz(long long **C11, long long **C12, long long **C21, long long **C22, int dim)
 {
