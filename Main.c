@@ -306,10 +306,10 @@ long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim)
     long long **S1, **S2, **S3, **S4, **S5, **T1, **T2, **T3, **T4, **T5, **M1, **M2, **M3, **M4, **M5, **M6, **M7, **C11, **C12, **C21, **C22, **aux, **aux2;
     int dim2;
 
-    if (dim <= 2)
+    if (dim <= 40)
     {
-        matrizResultado = asignar_matriz(2, 2);
-        matrizResultado = multiplicacion_clasica(matriz_1, matriz_2, 2, 2, 2, 2);
+        // matrizResultado = asignar_matriz(2, 2);
+        matrizResultado = multiplicacion_clasica(matriz_1, matriz_2, dim, dim, dim, dim);
         return matrizResultado;
     }
     // Comprobar que la dimension de las matrices sea par
@@ -340,29 +340,29 @@ long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim)
 
     // PASO 3: ASIGNACION
 
-    S1 = asignar_matriz(dim / 2, dim / 2);
-    S2 = asignar_matriz(dim / 2, dim / 2);
-    S3 = asignar_matriz(dim / 2, dim / 2);
-    S4 = asignar_matriz(dim / 2, dim / 2);
-    S5 = asignar_matriz(dim / 2, dim / 2);
-    T1 = asignar_matriz(dim / 2, dim / 2);
-    T2 = asignar_matriz(dim / 2, dim / 2);
-    T3 = asignar_matriz(dim / 2, dim / 2);
-    T4 = asignar_matriz(dim / 2, dim / 2);
-    T5 = asignar_matriz(dim / 2, dim / 2);
-    M1 = asignar_matriz(dim / 2, dim / 2);
-    M2 = asignar_matriz(dim / 2, dim / 2);
-    M3 = asignar_matriz(dim / 2, dim / 2);
-    M4 = asignar_matriz(dim / 2, dim / 2);
-    M5 = asignar_matriz(dim / 2, dim / 2);
-    M6 = asignar_matriz(dim / 2, dim / 2);
-    M7 = asignar_matriz(dim / 2, dim / 2);
-    C11 = asignar_matriz(dim / 2, dim / 2);
-    C12 = asignar_matriz(dim / 2, dim / 2);
-    C21 = asignar_matriz(dim / 2, dim / 2);
-    C22 = asignar_matriz(dim / 2, dim / 2);
-    aux = asignar_matriz(dim / 2, dim / 2);
-    aux2 = asignar_matriz(dim / 2, dim / 2);
+    // S1 = asignar_matriz(dim / 2, dim / 2);
+    // S2 = asignar_matriz(dim / 2, dim / 2);
+    // S3 = asignar_matriz(dim / 2, dim / 2);
+    // S4 = asignar_matriz(dim / 2, dim / 2);
+    // S5 = asignar_matriz(dim / 2, dim / 2);
+    // T1 = asignar_matriz(dim / 2, dim / 2);
+    // T2 = asignar_matriz(dim / 2, dim / 2);
+    // T3 = asignar_matriz(dim / 2, dim / 2);
+    // T4 = asignar_matriz(dim / 2, dim / 2);
+    // T5 = asignar_matriz(dim / 2, dim / 2);
+    // M1 = asignar_matriz(dim / 2, dim / 2);
+    // M2 = asignar_matriz(dim / 2, dim / 2);
+    // M3 = asignar_matriz(dim / 2, dim / 2);
+    // M4 = asignar_matriz(dim / 2, dim / 2);
+    // M5 = asignar_matriz(dim / 2, dim / 2);
+    // M6 = asignar_matriz(dim / 2, dim / 2);
+    // M7 = asignar_matriz(dim / 2, dim / 2);
+    // C11 = asignar_matriz(dim / 2, dim / 2);
+    // C12 = asignar_matriz(dim / 2, dim / 2);
+    // C21 = asignar_matriz(dim / 2, dim / 2);
+    // C22 = asignar_matriz(dim / 2, dim / 2);
+    // aux = asignar_matriz(dim / 2, dim / 2);
+    // aux2 = asignar_matriz(dim / 2, dim / 2);
 
     // Sumas de la matriz 1
     // Primer paso de suma de matrices de Strassen
