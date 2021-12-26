@@ -3,7 +3,8 @@
 // IDE: Visual Studio Code 1.62.3
 // SO: Windows 10
 // Fecha: 21 de Diciembre - 2021
-// Este programa hace weas
+// Este programa genera dos matrices de un orden dado por el usuario y realiza multiplicaciones con dos algoritmos distintos, el algoritmo clasico y la multiplicacion de Strassen
+
 
 #include <stdio.h>
 #include <math.h>
@@ -18,15 +19,14 @@
 long long **asignar_matriz(int n, int m);                        // Reservar la memoria y crear una matriz nula
 void llenar_matriz(long long **matriz, int filas, int columnas); // Llenar la matriz nula con valores al azar utilizando la funcion rand()
 void llenar_submatriz(long long **matriz, long long **matriz_original, int iFilas, int fFilas, int iCol, int fCol);
-void imprimir_matriz(long long **array, int filas, int columnas);                                                                              // Funcion que imprime la matriz
-void menu();                                                                                                                                   // Menu para desplazarse entre las funciones del programa
-long long **sumaMatrices(long long **matriz1, long long **matriz2, int filas, int columnas);                                                   // Suma de Matrices
-long long **restaMatrices(long long **matriz1, long long **matriz2, int filas, int columnas);                                                  // Resta de matrices
-long long **multiplicacion_clasica(long long **matriz_1, long long **matriz_2, int filas_1, int filas_2, int col_1, int col_2);                // Multiplicacion de matrices de forma clasica
-long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim);                                                                // Multiplicacion de matrices con el algoritmo de Strassen
-long long **recombinarMatriz(long long **C11, long long **C12, long long **C21, long long **C22, int dim);                                     // Funcion que recombina las 4 sub matrices en la matriz mas grande
-void dividir_matriz(long long **matrizO, long long **matriz_11, long long **matriz_12, long long **matriz_21, long long **matriz_22, int dim); // Se divide la Matriz en Submatrices
-long long **matriz_par(long long **matriz, int *dim);                                                                                          // Funcion que aumenta a un numero par las dimensiones de una matriz de orden impar
+void imprimir_matriz(long long **array, int filas, int columnas);                                                               // Funcion que imprime la matriz
+void menu();                                                                                                                    // Menu para desplazarse entre las funciones del programa
+long long **sumaMatrices(long long **matriz1, long long **matriz2, int filas, int columnas);                                    // Suma de Matrices
+long long **restaMatrices(long long **matriz1, long long **matriz2, int filas, int columnas);                                   // Resta de matrices
+long long **multiplicacion_clasica(long long **matriz_1, long long **matriz_2, int filas_1, int filas_2, int col_1, int col_2); // Multiplicacion de matrices de forma clasica
+long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim);                                                 // Multiplicacion de matrices con el algoritmo de Strassen
+long long **recombinarMatriz(long long **C11, long long **C12, long long **C21, long long **C22, int dim);                      // Funcion que recombina las 4 sub matrices en la matriz mas grande
+long long **matriz_par(long long **matriz, int *dim); // Funcion que aumenta a un numero par las dimensiones de una matriz de orden impar
 
 // ########### Funciones Profesor #######//
 long long MultP(long long a, long long b);
@@ -246,11 +246,10 @@ void llenar_matriz(long long **matriz, int filas, int columnas)
     {
         for (int j = 0; j < columnas; j++)
         {
-            matriz[i][j] = ((long long)(rand() % P)); // Se asignan valores aleatorios a cada coordenadas de la matriz
+            matriz[i][j] = i + j + 1; //((long long)(rand() % P)); // Se asignan valores aleatorios a cada coordenadas de la matriz
         }
     }
 }
-
 void llenar_submatriz(long long **matriz, long long **matriz_original, int iFilas, int iCol, int filas, int col)
 {
     for (int i = 0; i < filas; i++)
@@ -304,11 +303,10 @@ long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim)
     long long **matriz_b11, **matriz_b12, **matriz_b21, **matriz_b22;
     long long **matrizResultado;
     long long **S1, **S2, **S3, **S4, **S5, **T1, **T2, **T3, **T4, **T5, **M1, **M2, **M3, **M4, **M5, **M6, **M7, **C11, **C12, **C21, **C22, **aux, **aux2;
-    int dim2;
+    int dim2, largo;
 
     if (dim <= 40)
     {
-        // matrizResultado = asignar_matriz(2, 2);
         matrizResultado = multiplicacion_clasica(matriz_1, matriz_2, dim, dim, dim, dim);
         return matrizResultado;
     }
@@ -317,52 +315,35 @@ long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim)
     matriz_1 = matriz_par(matriz_1, &dim);
     matriz_2 = matriz_par(matriz_2, &dim2);
 
+    largo = dim / 2;
+
     // PASO 1: SUBMATRICES
     // Sub division de matrizes original en 4 submatrices cada una
     matriz_a11 = asignar_matriz(dim / 2, dim / 2);
     matriz_a12 = asignar_matriz(dim / 2, dim / 2);
     matriz_a21 = asignar_matriz(dim / 2, dim / 2);
     matriz_a22 = asignar_matriz(dim / 2, dim / 2);
-    dividir_matriz(matriz_1, matriz_a11, matriz_a12, matriz_a21, matriz_a22, dim);
 
     matriz_b11 = asignar_matriz(dim / 2, dim / 2);
     matriz_b12 = asignar_matriz(dim / 2, dim / 2);
     matriz_b21 = asignar_matriz(dim / 2, dim / 2);
     matriz_b22 = asignar_matriz(dim / 2, dim / 2);
-    dividir_matriz(matriz_2, matriz_b11, matriz_b12, matriz_b21, matriz_b22, dim);
 
-    // PASO 2: MULTIPLICACIONES
-    // Paso recursivo de la funcion
-    Mult_Strassen(matriz_a11, matriz_b11, dim / 2);
-    Mult_Strassen(matriz_a12, matriz_b12, dim / 2);
-    Mult_Strassen(matriz_a21, matriz_b21, dim / 2);
-    Mult_Strassen(matriz_a22, matriz_b22, dim / 2);
+    for (int i = 0; i < largo; i++)
+    {
+        for (int j = 0; j < largo; j++)
+        {
+            matriz_a11[i][j] = matriz_1[i][j];
+            matriz_a12[i][j] = matriz_1[i][j + largo];
+            matriz_a21[i][j] = matriz_1[i + largo][j];
+            matriz_a22[i][j] = matriz_1[i + largo][j + largo];
 
-    // PASO 3: ASIGNACION
-
-    // S1 = asignar_matriz(dim / 2, dim / 2);
-    // S2 = asignar_matriz(dim / 2, dim / 2);
-    // S3 = asignar_matriz(dim / 2, dim / 2);
-    // S4 = asignar_matriz(dim / 2, dim / 2);
-    // S5 = asignar_matriz(dim / 2, dim / 2);
-    // T1 = asignar_matriz(dim / 2, dim / 2);
-    // T2 = asignar_matriz(dim / 2, dim / 2);
-    // T3 = asignar_matriz(dim / 2, dim / 2);
-    // T4 = asignar_matriz(dim / 2, dim / 2);
-    // T5 = asignar_matriz(dim / 2, dim / 2);
-    // M1 = asignar_matriz(dim / 2, dim / 2);
-    // M2 = asignar_matriz(dim / 2, dim / 2);
-    // M3 = asignar_matriz(dim / 2, dim / 2);
-    // M4 = asignar_matriz(dim / 2, dim / 2);
-    // M5 = asignar_matriz(dim / 2, dim / 2);
-    // M6 = asignar_matriz(dim / 2, dim / 2);
-    // M7 = asignar_matriz(dim / 2, dim / 2);
-    // C11 = asignar_matriz(dim / 2, dim / 2);
-    // C12 = asignar_matriz(dim / 2, dim / 2);
-    // C21 = asignar_matriz(dim / 2, dim / 2);
-    // C22 = asignar_matriz(dim / 2, dim / 2);
-    // aux = asignar_matriz(dim / 2, dim / 2);
-    // aux2 = asignar_matriz(dim / 2, dim / 2);
+            matriz_b11[i][j] = matriz_2[i][j];
+            matriz_b12[i][j] = matriz_2[i][j + largo];
+            matriz_b21[i][j] = matriz_2[i + largo][j];
+            matriz_b22[i][j] = matriz_2[i + largo][j + largo];
+        }
+    }
 
     // Sumas de la matriz 1
     // Primer paso de suma de matrices de Strassen
@@ -381,13 +362,13 @@ long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim)
     T5 = restaMatrices(matriz_b12, matriz_b22, dim / 2, dim / 2);
 
     // Multiplicaciones de Strassen
-    M1 = multiplicacion_clasica(S1, T1, dim / 2, dim / 2, dim / 2, dim / 2);
-    M2 = multiplicacion_clasica(S2, matriz_b11, dim / 2, dim / 2, dim / 2, dim / 2);
-    M3 = multiplicacion_clasica(matriz_a11, T5, dim / 2, dim / 2, dim / 2, dim / 2);
-    M4 = multiplicacion_clasica(matriz_a22, T4, dim / 2, dim / 2, dim / 2, dim / 2);
-    M5 = multiplicacion_clasica(S3, matriz_b22, dim / 2, dim / 2, dim / 2, dim / 2);
-    M6 = multiplicacion_clasica(S4, T3, dim / 2, dim / 2, dim / 2, dim / 2);
-    M7 = multiplicacion_clasica(S5, T2, dim / 2, dim / 2, dim / 2, dim / 2);
+    M1 = Mult_Strassen(S1,T1,dim / 2);
+    M2 = Mult_Strassen(S2, matriz_b11, dim / 2);
+    M3 = Mult_Strassen(matriz_a11, T5, dim / 2);
+    M4 = Mult_Strassen(matriz_a22, T4, dim / 2);
+    M5 = Mult_Strassen(S3, matriz_b22, dim / 2);
+    M6 = Mult_Strassen(S4, T3, dim / 2);
+    M7 = Mult_Strassen(S5, T2, dim / 2);
 
     // Recombinacion de Strassen
     aux = sumaMatrices(M1, M4, dim / 2, dim / 2);
@@ -398,6 +379,7 @@ long long **Mult_Strassen(long long **matriz_1, long long **matriz_2, int dim)
     aux = restaMatrices(M1, M2, dim / 2, dim / 2);
     aux2 = sumaMatrices(M3, M6, dim / 2, dim / 2);
     C22 = sumaMatrices(aux, aux2, dim / 2, dim / 2);
+
     // Recombinacion de matrices en la matriz resultado
     matrizResultado = recombinarMatriz(C11, C12, C21, C22, dim);
     return matrizResultado;
@@ -481,14 +463,6 @@ long long **matriz_par(long long **matriz, int *dim)
     }
     else
         return matriz; // Devuelve la matriz orginal
-}
-
-void dividir_matriz(long long **matrizO, long long **matriz_11, long long **matriz_12, long long **matriz_21, long long **matriz_22, int dim)
-{
-    llenar_submatriz(matriz_11, matrizO, 0, 0, dim / 2, dim / 2);             // Traspasa los valores del primer cuadrante a M11
-    llenar_submatriz(matriz_12, matrizO, 0, dim / 2, dim / 2, dim / 2);       // Traspasa los valores del segundo cuadrante a M12
-    llenar_submatriz(matriz_21, matrizO, dim / 2, 0, dim / 2, dim / 2);       // Traspasa los valores del tercer cuadrante a M21
-    llenar_submatriz(matriz_22, matrizO, dim / 2, dim / 2, dim / 2, dim / 2); // Traspasa los valores del cuarto cuadrante a M22
 }
 
 // Funciones entregadas para los calculos en mod p.
